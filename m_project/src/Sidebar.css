@@ -1,0 +1,102 @@
+.sidebar-container {
+    display: flex;
+    align-items: center;
+}
+
+.hamburger {
+    font-size: 15   px;
+    cursor: pointer;
+    padding: 10px;
+    position: fixed;
+    top: 10px;
+    left: 15px;
+    z-index: 1000;
+    background: #333;
+    color: white;
+    border-radius: 5px;
+}
+
+.sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background: #222;
+    color: white;
+    transition: left 0.3s ease;
+    padding-top: 50px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.sidebar ul li:hover {
+    background: #444;
+    transition: 0.3s;
+}
+
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Hidden initially */
+    width: 250px;
+    height: 100%;
+    background-color: #222;
+    color: white;
+    padding-top: 20px;
+    transition: left 0.3s ease-in-out;
+    z-index: 10;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar ul li a:hover {
+    background-color: #444;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}

@@ -1,0 +1,45 @@
+.suspicious-chats {
+    padding: 20px;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #444;
+    color: white;
+}
+
+.view-btn, .block-btn {
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.view-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.block-btn {
+    background-color: #ff4d4d;
+    color: white;
+}

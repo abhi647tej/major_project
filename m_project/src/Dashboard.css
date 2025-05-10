@@ -1,0 +1,113 @@
+.dashboard {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.dashboard-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.retrieve-chat-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.retrieve-chat-button:hover {
+    background-color: #0056b3;
+}
+
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.user-table th, .user-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.user-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.graph-container {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.dashboard-container {
+    display: flex;
+}
+
+.sidebar {
+    width: 0;
+    height: 100vh;
+    background-color: #333;
+    color: white;
+    overflow-x: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: 0.3s;
+    padding-top: 60px;
+}
+
+.sidebar.open {
+    width: 250px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px;
+    cursor: pointer;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.top-bar {
+    width: 100%;
+    padding: 10px;
+    background: #222;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+}
+

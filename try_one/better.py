@@ -129,6 +129,6 @@ async def message_handler(event):
     print(f"Analyzed message from {sender.first_name} ({sender.id}): {reason}")
 
 # 12. Start the Telegram client
-client.start()
-print("Bot is running and monitoring messages...")
-client.run_until_disconnected()
+# client.start()
+# print("Bot is running and monitoring messages...")
+# client.run_until_disconnected()

@@ -473,114 +473,332 @@
 
 
 # random forest model with telegram metadata
-from telethon import TelegramClient, events
-import os
-import re
-import joblib
-from bs4 import BeautifulSoup
-import pandas as pd
-from nltk.sentiment import SentimentIntensityAnalyzer
+# from telethon import TelegramClient, events
+# import os
+# import re
+# import joblib
+# from bs4 import BeautifulSoup
+# import pandas as pd
+# from nltk.sentiment import SentimentIntensityAnalyzer
+# import nltk
+
+
+# # Download VADER
+# nltk.download('vader_lexicon')
+
+# # Load the trained Random Forest model
+# model = joblib.load("suspicious_chat_rf_model.pkl")
+
+# # Text preprocessing for model
+# def preprocess_text(text):
+#     text = text.lower()
+#     text = re.sub(r"http\S+|www\S+|https\S+", '', text)
+#     text = re.sub(r'[^\w\s]', '', text)
+#     text = re.sub(r'\d+', '', text)
+#     return text.strip()
+
+# # Check if message is suspicious
+# def is_suspicious(message):
+#     clean = preprocess_text(message)
+#     return model.predict([clean])[0] == 1
+
+# # Telegram API credentials
+# api_id = 20966780
+# api_hash = '28399beb77594d96b266364a7e194eb6'
+# phone_number = '+918275889130'
+
+# client = TelegramClient('session_name', api_id, api_hash)
+# client.start(phone=phone_number)
+
+# # Sentiment analyzer (optional if needed)
+# sia = SentimentIntensityAnalyzer()
+
+# # Directories
+# output_dir = 'telegram_chat_exports'
+# media_dir = os.path.join(output_dir, 'media')
+# os.makedirs(media_dir, exist_ok=True)
+
+# # Download media
+# async def download_media(message, media_dir):
+#     if message.media:
+#         media_path = await message.download_media(file=media_dir)
+#         return media_path
+#     return None
+
+# @client.on(events.NewMessage)
+# async def handler(event):
+#     if not event.is_private:
+#         return
+
+#     try:
+#         user = await client.get_entity(event.sender_id)
+#         if user.bot:
+#             return
+
+#         # Extract user metadata
+#         user_id = user.id
+#         username = user.username
+#         first_name = getattr(user, 'first_name', 'Unknown')
+#         last_name = getattr(user, 'last_name', 'Unknown')
+#         phone = getattr(user, 'phone', 'No phone number')
+#         bio = getattr(user, 'bio', 'No bio available')
+
+#         # Print user metadata
+#         print(f"User ID: {user_id}")
+#         print(f"Username: {username}")
+#         print(f"First Name: {first_name}")
+#         print(f"Last Name: {last_name}")
+#         print(f"Phone Number: {phone}")
+#         print(f"Bio: {bio}")
+
+#         # Safe filename
+#         safe_name = ''.join(c if c.isalnum() else '_' for c in (username or first_name))
+#         html_file = os.path.join(output_dir, f"{safe_name}_{user_id}.html")
+
+#         # Download media if present
+#         media_path = await download_media(event.message, media_dir)
+
+#         # Write message to HTML
+#         with open(html_file, 'a', encoding='utf-8') as f:
+#             if os.stat(html_file).st_size == 0:
+#                 f.write("<html><body>\n")
+#             f.write(f"<div class='message'>\n")
+#             f.write(f"  <div class='from_name'>{first_name}</div>\n")
+#             if media_path:
+#                 media_link = os.path.relpath(media_path, output_dir)
+#                 f.write(f"  <div class='text'>[Media: <a href='{media_link}'>{os.path.basename(media_path)}</a>]</div>\n")
+#             else:
+#                 f.write(f"  <div class='text'>{event.message.text}</div>\n")
+#             f.write("</div>\n")
+#             f.write("</body></html>\n")
+
+#         print(f"Message saved to {html_file}")
+
+#         # Check for suspicious content using Random Forest
+#         if is_suspicious(event.message.text):
+#             print("⚠️ Suspicious message detected!")
+#         else:
+#             print("✅ Normal message.")
+
+#     except Exception as e:
+#         print(f"Error: {e}")
+
+# print("🔍 Listening for new messages (One-to-One Chats Only)...")
+# client.run_until_disconnected()
+
+
+
+# from telethon.sync import TelegramClient, events
+# import nltk
+# from nltk.sentiment import SentimentIntensityAnalyzer
+# import json
+# import os
+# from datetime import datetime
+
+# # NLTK setup
+# nltk.download('vader_lexicon')
+# sia = SentimentIntensityAnalyzer()
+
+# # Telegram credentials
+# api_id = 20966780
+# api_hash = '28399beb77594d96b266364a7e194eb6'
+# phone_number = '+918275889130'
+
+# client = TelegramClient('anon', api_id, api_hash)
+
+# # Suspicious keywords
+# suspicious_keywords = [
+#     "drug", "weed", "marijuana", "cocaine", "lsd", "heroin",
+#     "meth", "ecstasy", "mdma", "opium", "hash", "ganja", "acid",
+#     "buy drugs", "sell drugs", "narcotics", "illegal substances"
+# ]
+
+# def is_suspicious(message):
+#     message_lower = message.lower()
+#     if any(keyword in message_lower for keyword in suspicious_keywords):
+#         return True
+#     sentiment_score = sia.polarity_scores(message)['compound']
+#     return sentiment_score < -0.5
+
+# def save_suspicious_user(data):
+#     file_path = 'suspicious_chats.json'
+#     existing_data = []
+
+#     if os.path.exists(file_path):
+#         with open(file_path, 'r') as f:
+#             try:
+#                 existing_data = json.load(f)
+#             except json.JSONDecodeError:
+#                 pass
+
+#     existing_data.append(data)
+
+#     with open(file_path, 'w') as f:
+#         json.dump(existing_data, f, indent=4)
+
+# @client.on(events.NewMessage)
+# async def handler(event):
+#     if event.is_private and event.sender_id:
+#         sender = await event.get_sender()
+#         message = event.message.text
+
+#         user_data = {
+#             "userId": str(sender.id),
+#             "username": f"@{sender.username}" if sender.username else "N/A",
+#             "firstName": sender.first_name or "N/A",
+#             "lastName": sender.last_name or "N/A",
+#             "phone": sender.phone or "N/A",
+#             "bio": sender.bot or "No bio available",
+#             "status": "Active",
+#             "isBot": "Yes" if sender.bot else "No",
+#             "language": "en",
+#             "message": message,
+#             "chatHistory": [],  # Extend this later if needed
+#             "messageType": "Suspicious" if is_suspicious(message) else "Normal"
+#         }
+
+#         print(f"{'⚠️ Suspicious' if user_data['messageType']=='Suspicious' else '✅ Normal'} message: {message}")
+#         save_suspicious_user(user_data)
+
+# with client:
+#     print("🚀 Telegram monitor is running...")
+#     client.run_until_disconnected()
+
+
+
+
+from telethon.sync import TelegramClient, events
 import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+import json
+import os
+import requests
+from datetime import datetime
 
-# Download VADER
+# NLTK setup
 nltk.download('vader_lexicon')
+sia = SentimentIntensityAnalyzer()
 
-# Load the trained Random Forest model
-model = joblib.load("suspicious_chat_rf_model.pkl")
-
-# Text preprocessing for model
-def preprocess_text(text):
-    text = text.lower()
-    text = re.sub(r"http\S+|www\S+|https\S+", '', text)
-    text = re.sub(r'[^\w\s]', '', text)
-    text = re.sub(r'\d+', '', text)
-    return text.strip()
-
-# Check if message is suspicious
-def is_suspicious(message):
-    clean = preprocess_text(message)
-    return model.predict([clean])[0] == 1
-
-# Telegram API credentials
+# Telegram credentials
 api_id = 20966780
 api_hash = '28399beb77594d96b266364a7e194eb6'
 phone_number = '+918275889130'
 
-client = TelegramClient('session_name', api_id, api_hash)
+client = TelegramClient('combined_session', api_id, api_hash)
 client.start(phone=phone_number)
 
-# Sentiment analyzer (optional if needed)
-sia = SentimentIntensityAnalyzer()
+# Suspicious keywords
+suspicious_keywords = [
+    "drug", "weed", "marijuana", "cocaine", "lsd", "heroin",
+    "meth", "ecstasy", "mdma", "opium", "hash", "ganja", "acid",
+    "buy drugs", "sell drugs", "narcotics", "illegal substances","blaze","goodies","white powder","puff","bhang"
+]
 
-# Directories
+def is_suspicious(message):
+    message_lower = message.lower()
+    if any(keyword in message_lower for keyword in suspicious_keywords):
+        return True
+    sentiment_score = sia.polarity_scores(message)['compound']
+    return sentiment_score < -0.5
+
+def save_suspicious_user(data):
+    file_path = 'suspicious_chats.json'
+    existing_data = []
+
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as f:
+            try:
+                existing_data = json.load(f)
+            except json.JSONDecodeError:
+                pass
+
+    existing_data.append(data)
+
+    with open(file_path, 'w') as f:
+        json.dump(existing_data, f, indent=4)
+
+# Create directories
 output_dir = 'telegram_chat_exports'
 media_dir = os.path.join(output_dir, 'media')
 os.makedirs(media_dir, exist_ok=True)
 
-# Download media
-async def download_media(message, media_dir):
-    if message.media:
-        media_path = await message.download_media(file=media_dir)
-        return media_path
-    return None
+# Image classification with YOLO model
+def classify_image_with_yolo(image_path):
+    url = "http://localhost:5000/predict"
+    with open(image_path, "rb") as img_file:
+        files = {"image": img_file}
+        try:
+            response = requests.post(url, files=files)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return {"error": f"YOLO API error: {response.text}"}
+        except Exception as e:
+            return {"error": str(e)}
 
 @client.on(events.NewMessage)
 async def handler(event):
-    if not event.is_private:
-        return
+    if event.is_private and event.sender_id:
+        sender = await event.get_sender()
 
-    try:
-        user = await client.get_entity(event.sender_id)
-        if user.bot:
-            return
+        if event.message.text:
+            message = event.message.text
+            user_data = {
+                "userId": str(sender.id),
+                "username": f"@{sender.username}" if sender.username else "N/A",
+                "firstName": sender.first_name or "N/A",
+                "lastName": sender.last_name or "N/A",
+                "phone": sender.phone or "N/A",
+                "bio": sender.bot or "No bio available",
+                "status": "Active",
+                "isBot": "Yes" if sender.bot else "No",
+                "language": "en",
+                "message": message,
+                "chatHistory": [],
+                "messageType": "Suspicious" if is_suspicious(message) else "Normal"
+            }
 
-        # Extract user metadata
-        user_id = user.id
-        username = user.username
-        first_name = getattr(user, 'first_name', 'Unknown')
-        last_name = getattr(user, 'last_name', 'Unknown')
-        phone = getattr(user, 'phone', 'No phone number')
-        bio = getattr(user, 'bio', 'No bio available')
+            print(f"{'⚠️ Suspicious' if user_data['messageType']=='Suspicious' else '✅ Normal'} message: {message}")
+            save_suspicious_user(user_data)
 
-        # Print user metadata
-        print(f"User ID: {user_id}")
-        print(f"Username: {username}")
-        print(f"First Name: {first_name}")
-        print(f"Last Name: {last_name}")
-        print(f"Phone Number: {phone}")
-        print(f"Bio: {bio}")
+        elif event.message.media:
+            try:
+                if sender.bot:
+                    return
 
-        # Safe filename
-        safe_name = ''.join(c if c.isalnum() else '_' for c in (username or first_name))
-        html_file = os.path.join(output_dir, f"{safe_name}_{user_id}.html")
+                media_path = await event.message.download_media(file=media_dir)
+                print(f"📥 Media saved at: {media_path}")
 
-        # Download media if present
-        media_path = await download_media(event.message, media_dir)
+                result = classify_image_with_yolo(media_path)
+                yolo_class = result.get("class", "")
+                confidence = result.get("confidence", 0)
 
-        # Write message to HTML
-        with open(html_file, 'a', encoding='utf-8') as f:
-            if os.stat(html_file).st_size == 0:
-                f.write("<html><body>\n")
-            f.write(f"<div class='message'>\n")
-            f.write(f"  <div class='from_name'>{first_name}</div>\n")
-            if media_path:
-                media_link = os.path.relpath(media_path, output_dir)
-                f.write(f"  <div class='text'>[Media: <a href='{media_link}'>{os.path.basename(media_path)}</a>]</div>\n")
-            else:
-                f.write(f"  <div class='text'>{event.message.text}</div>\n")
-            f.write("</div>\n")
-            f.write("</body></html>\n")
+                is_suspicious_image = yolo_class.lower() != "not a drug" and confidence >= 0.7
 
-        print(f"Message saved to {html_file}")
+                print("\n🧪 YOLO Result:")
+                print(f"  Class     : {yolo_class}")
+                print(f"  Confidence: {confidence}")
+                print(f"  🔍 Image Status: {'⚠️ Suspicious' if is_suspicious_image else '✅ Not Suspicious'}")
 
-        # Check for suspicious content using Random Forest
-        if is_suspicious(event.message.text):
-            print("⚠️ Suspicious message detected!")
-        else:
-            print("✅ Normal message.")
+                image_data = {
+                    "userId": str(sender.id),
+                    "username": f"@{sender.username}" if sender.username else "N/A",
+                    "firstName": getattr(sender, 'first_name', 'N/A'),
+                    "lastName": getattr(sender, 'last_name', 'N/A'),
+                    "phone": getattr(sender, 'phone', 'N/A'),
+                    "bio": "N/A",
+                    "status": "Active",
+                    "isBot": "No",
+                    "language": "en",
+                    "message": f"[Image] {os.path.basename(media_path)}",
+                    "chatHistory": [],
+                    "messageType": "Suspicious" if is_suspicious_image else "Normal"
+                }
+                save_suspicious_user(image_data)
 
-    except Exception as e:
-        print(f"Error: {e}")
+            except Exception as e:
+                print(f"⚠️ Error processing media: {e}")
 
-print("🔍 Listening for new messages (One-to-One Chats Only)...")
+print("🚀 Combined Telegram monitor (text + image) is running...")
 client.run_until_disconnected()
+

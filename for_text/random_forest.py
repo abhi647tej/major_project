@@ -41,5 +41,5 @@ print("Classification Report:\n")
 print(classification_report(y_test, y_pred))
 
 # Save model
-joblib.dump(pipeline, "suspicious_chat_rf_model.pkl")
+joblib.dump(pipeline, "suspicious_chat_rf_mode.pkl")
 print("✅ Model saved as suspicious_chat_rf_model.pkl")
